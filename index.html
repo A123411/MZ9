@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" class="overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- منع التكبير والزوم نهائياً -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
     <title>3D Craft Studio | استوديو الطباعة ثلاثية الأبعاد</title>
+    
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
@@ -38,12 +40,22 @@
     </script>
     
     <style>
+        /* إيقاف التكبير والسكرول العرضي لمنع الاهتزاز */
+        html, body {
+            touch-action: pan-y;
+            -webkit-text-size-adjust: 100%;
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+        }
+
         body {
             font-family: 'Cairo', sans-serif;
             background-color: #080c14;
             color: #f3f4f6;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
+            -webkit-user-select: none;
         }
 
         .glass-panel {
@@ -62,7 +74,7 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between overflow-x-hidden">
+<body class="min-h-screen flex flex-col justify-between overflow-x-hidden text-right">
 
     <!-- Top Announcement Bar -->
     <div class="bg-gradient-to-r from-brand-accent to-brand-cyan text-white text-[11px] sm:text-xs font-bold py-2 px-4 text-center flex items-center justify-center gap-1.5 shadow-md">
@@ -74,8 +86,8 @@
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex items-center justify-between h-16 sm:h-20">
                 
-                <!-- Logo -->
-                <div class="flex items-center gap-2.5 cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                <!-- Logo (الضغط 10 مرات هنا يفتح لوحة السرية) -->
+                <div id="secretLogoTrigger" class="flex items-center gap-2.5 cursor-pointer active:scale-95 transition-transform">
                     <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-tr from-brand-accent to-brand-cyan flex items-center justify-center shadow-lg">
                         <i data-lucide="box" class="w-5 h-5 sm:w-6 sm:h-6 text-white"></i>
                     </div>
@@ -129,7 +141,7 @@
     </div>
 
     <!-- Hero Section -->
-    <section class="relative py-8 sm:py-14 overflow-hidden">
+    <section class="relative py-8 sm:py-12 overflow-hidden">
         <div class="max-w-7xl mx-auto px-4">
             <div class="text-center max-w-3xl mx-auto">
                 <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-accent/10 border border-brand-accent/30 text-brand-cyan text-xs font-bold mb-4">
@@ -137,21 +149,21 @@
                     استوديو طباعة 3D احترافي حسب الطلب
                 </div>
 
-                <h1 class="text-3xl sm:text-5xl font-black text-white leading-tight mb-4">
+                <h1 class="text-2xl sm:text-4xl font-black text-white leading-tight mb-3">
                     نحول أفكارك وتصاميمك إلى <br class="hidden sm:inline">
                     <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-cyan to-brand-accent">مجسمات ملموسة بدقة عالية</span>
                 </h1>
 
-                <p class="text-gray-300 text-sm sm:text-base mb-6 leading-relaxed px-2">
+                <p class="text-gray-300 text-xs sm:text-sm mb-6 leading-relaxed px-2">
                     اختر من تشكيلتنا المميزة من المجسمات الجاهزة للطباعة، أو ارسل لنا ملفك الخاص (STL/OBJ) لنقوم بطباعته لك بأفضل الخامات وشحنه حتى باب بيتك.
                 </p>
 
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-3 px-4">
-                    <a href="#catalog" class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-gradient-to-r from-brand-accent to-brand-cyan text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg active:scale-95 transition">
+                    <a href="#catalog" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-brand-accent to-brand-cyan text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg active:scale-95 transition">
                         <i data-lucide="eye" class="w-4 h-4"></i>
                         تصفح المنتجات الجاهزة
                     </a>
-                    <a href="#custom-print" class="w-full sm:w-auto px-6 py-3.5 rounded-xl glass-card text-gray-200 font-bold text-sm flex items-center justify-center gap-2 hover:bg-brand-card active:scale-95 transition">
+                    <a href="#custom-print" class="w-full sm:w-auto px-6 py-3 rounded-xl glass-card text-gray-200 font-bold text-xs flex items-center justify-center gap-2 hover:bg-brand-card active:scale-95 transition">
                         <i data-lucide="printer" class="w-4 h-4 text-brand-cyan"></i>
                         عايز تطبع ملف خاص بك؟
                     </a>
@@ -161,56 +173,56 @@
     </section>
 
     <!-- Catalog Section -->
-    <section id="catalog" class="py-6 max-w-7xl mx-auto px-4 w-full">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+    <section id="catalog" class="py-4 max-w-7xl mx-auto px-4 w-full">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
             <div>
-                <h2 class="text-2xl font-black text-white">معرض المنتجات والمجسمات الجاهزة</h2>
-                <p class="text-xs sm:text-sm text-gray-400">اختر القطعة وسيتم طباعتها وتجهيزها فوراً لحسابك</p>
+                <h2 class="text-xl sm:text-2xl font-black text-white">معرض المنتجات والمجسمات الجاهزة</h2>
+                <p class="text-xs text-gray-400">اختر القطعة وسيتم طباعتها وتجهيزها فوراً لحسابك</p>
             </div>
 
             <!-- Search -->
             <div class="relative w-full sm:w-64">
-                <input type="text" id="searchInput" oninput="searchProducts()" placeholder="ابحث عن مجسم..." class="w-full bg-brand-card border border-brand-border text-xs sm:text-sm rounded-xl px-4 py-2.5 pl-9 text-white placeholder-gray-400 focus:outline-none focus:border-brand-accent">
+                <input type="text" id="searchInput" oninput="searchProducts()" placeholder="ابحث عن مجسم..." class="w-full bg-brand-card border border-brand-border text-xs rounded-xl px-4 py-2.5 pl-9 text-white placeholder-gray-400 focus:outline-none focus:border-brand-accent">
                 <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-3"></i>
             </div>
         </div>
 
         <!-- Category Filters -->
-        <div class="flex items-center gap-2 overflow-x-auto pb-3 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
-            <button onclick="filterCategory('all')" class="cat-btn px-5 py-2.5 rounded-xl bg-brand-accent text-white font-bold text-xs whitespace-nowrap shadow" data-cat="all">الكل</button>
-            <button onclick="filterCategory('decor')" class="cat-btn px-5 py-2.5 rounded-xl glass-card text-gray-300 font-bold text-xs whitespace-nowrap hover:text-white" data-cat="decor">ديكور وإضاءة 💡</button>
-            <button onclick="filterCategory('desk')" class="cat-btn px-5 py-2.5 rounded-xl glass-card text-gray-300 font-bold text-xs whitespace-nowrap hover:text-white" data-cat="desk">أدوات مكتبية 🖥️</button>
-            <button onclick="filterCategory('figures')" class="cat-btn px-5 py-2.5 rounded-xl glass-card text-gray-300 font-bold text-xs whitespace-nowrap hover:text-white" data-cat="figures">مجسمات وألعاب 🎮</button>
-            <button onclick="filterCategory('parts')" class="cat-btn px-5 py-2.5 rounded-xl glass-card text-gray-300 font-bold text-xs whitespace-nowrap hover:text-white" data-cat="parts">قطع غيار وميكانيكا 🔧</button>
+        <div class="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
+            <button onclick="filterCategory('all')" class="cat-btn px-4 py-2 rounded-xl bg-brand-accent text-white font-bold text-xs whitespace-nowrap shadow" data-cat="all">الكل</button>
+            <button onclick="filterCategory('decor')" class="cat-btn px-4 py-2 rounded-xl glass-card text-gray-300 font-bold text-xs whitespace-nowrap hover:text-white" data-cat="decor">ديكور وإضاءة 💡</button>
+            <button onclick="filterCategory('desk')" class="cat-btn px-4 py-2 rounded-xl glass-card text-gray-300 font-bold text-xs whitespace-nowrap hover:text-white" data-cat="desk">أدوات مكتبية 🖥️</button>
+            <button onclick="filterCategory('figures')" class="cat-btn px-4 py-2 rounded-xl glass-card text-gray-300 font-bold text-xs whitespace-nowrap hover:text-white" data-cat="figures">مجسمات وألعاب 🎮</button>
+            <button onclick="filterCategory('parts')" class="cat-btn px-4 py-2 rounded-xl glass-card text-gray-300 font-bold text-xs whitespace-nowrap hover:text-white" data-cat="parts">قطع غيار وميكانيكا 🔧</button>
         </div>
     </section>
 
     <!-- Main Products Grid -->
     <section class="py-2 max-w-7xl mx-auto px-4 w-full mb-10">
-        <div id="productsGrid" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
+        <div id="productsGrid" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5">
             <!-- Rendered dynamically -->
         </div>
     </section>
 
     <!-- Custom Print Section -->
-    <section id="custom-print" class="py-10 max-w-7xl mx-auto px-4 w-full mb-12">
-        <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-brand-border bg-gradient-to-br from-brand-card via-brand-dark to-brand-card relative overflow-hidden">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+    <section id="custom-print" class="py-8 max-w-7xl mx-auto px-4 w-full mb-12">
+        <div class="glass-panel p-5 sm:p-8 rounded-3xl border border-brand-border bg-gradient-to-br from-brand-card via-brand-dark to-brand-card relative overflow-hidden">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-5">
                 
                 <div class="text-right w-full md:w-2/3">
-                    <div class="flex items-center gap-2 text-brand-cyan font-bold text-xs mb-2">
+                    <div class="flex items-center gap-2 text-brand-cyan font-bold text-xs mb-1.5">
                         <i data-lucide="file-up" class="w-4 h-4"></i>
                         خدمة الطباعة المخصصة (On-Demand)
                     </div>
-                    <h2 class="text-xl sm:text-2xl font-black text-white mb-2">معاك ملف 3D أو فكرة عايز تطبعها؟</h2>
+                    <h2 class="text-lg sm:text-2xl font-black text-white mb-2">معاك ملف 3D أو فكرة عايز تطبعها؟</h2>
                     <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
                         تواصل معنا مباشرة عبر الواتساب، ارسل ملف التصميم (STL / OBJ) أو صور الفكرة، وسنقوم بتحديد الخامات المناسبة وحساب التكلفة بدقة فوراً!
                     </p>
                 </div>
 
                 <div class="w-full md:w-auto flex flex-col sm:flex-row gap-3">
-                    <button onclick="openWhatsAppCustomOrder()" class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-brand-green hover:bg-green-600 text-white font-bold text-sm transition flex items-center justify-center gap-2 shadow-lg active:scale-95">
-                        <i data-lucide="message-circle" class="w-5 h-5"></i>
+                    <button onclick="openWhatsAppCustomOrder()" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-brand-green hover:bg-green-600 text-white font-bold text-xs transition flex items-center justify-center gap-2 shadow-lg active:scale-95">
+                        <i data-lucide="message-circle" class="w-4 h-4"></i>
                         ارسل ملفك على الواتساب
                     </button>
                 </div>
@@ -219,19 +231,19 @@
         </div>
     </section>
 
-    <!-- SECRET ADMIN DASHBOARD MODAL (فتح فقط باللمس/الكيبورد السري للـ PIN 2529) -->
+    <!-- SECRET ADMIN DASHBOARD MODAL -->
     <div id="adminModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
-        <div class="glass-panel w-full max-w-lg rounded-3xl border border-brand-border p-6 relative">
+        <div class="glass-panel w-full max-w-lg rounded-3xl border border-brand-border p-5 relative max-h-[90vh] overflow-y-auto">
             <button onclick="closeAdminModal()" class="absolute top-4 left-4 p-2 rounded-full bg-brand-card text-gray-400 hover:text-white">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
 
-            <h3 class="text-lg font-black text-brand-cyan mb-1 flex items-center gap-2">
+            <h3 class="text-base sm:text-lg font-black text-brand-cyan mb-1 flex items-center gap-2">
                 <i data-lucide="shield-check" class="w-5 h-5"></i> لوحة الإدارة والمزامنة
             </h3>
-            <p class="text-xs text-gray-400 mb-5">إضافة منتج جديد وحفظه بقاعدة البيانات الدائمة مباشرة</p>
+            <p class="text-xs text-gray-400 mb-4">إضافة منتج جديد وحفظه بقاعدة البيانات الدائمة مباشرة</p>
 
-            <form onsubmit="handleAddNewProduct(event)" class="space-y-3.5">
+            <form onsubmit="handleAddNewProduct(event)" class="space-y-3">
                 <div>
                     <label class="block text-xs font-bold text-gray-300 mb-1">اسم المنتج / المجسم</label>
                     <input type="text" id="newTitle" required placeholder="مثال: حامل هاتف هندسي" class="w-full bg-brand-card border border-brand-border rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-brand-accent">
@@ -373,7 +385,7 @@
 
             items.forEach(product => {
                 grid.innerHTML += `
-                    <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between">
+                    <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between text-right">
                         <div class="relative cursor-pointer" onclick="openModal(${product.id})">
                             <img src="${product.image}" alt="${product.title}" class="w-full h-36 sm:h-48 object-cover">
                         </div>
@@ -385,7 +397,7 @@
                             </div>
 
                             <div class="mt-3 pt-2.5 border-t border-brand-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                                <span class="text-sm sm:text-base font-black text-brand-cyan">${product.price} ج.م</span>
+                                <span class="text-xs sm:text-sm font-black text-brand-cyan">${product.price} ج.م</span>
                                 <button onclick="addToCart(${product.id})" class="w-full sm:w-auto px-3 py-1.5 rounded-xl bg-brand-accent hover:bg-indigo-600 text-white transition text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1 active:scale-95">
                                     <i data-lucide="plus" class="w-3.5 h-3.5"></i>
                                     طلب طباعة
@@ -425,10 +437,21 @@
             e.target.reset();
         }
 
-        // Secret Trigger Logic (3 Touches or Keyboard Ctrl+Shift+A)
-        document.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 3) {
+        // Secret Trigger Logic (10 Clicks on 3D CRAFT Logo OR Ctrl+Shift+A)
+        let clickCount = 0;
+        let clickTimer = null;
+
+        document.getElementById('secretLogoTrigger').addEventListener('click', () => {
+            clickCount++;
+            clearTimeout(clickTimer);
+
+            if (clickCount >= 10) {
+                clickCount = 0;
                 verifyAndOpenAdmin();
+            } else {
+                clickTimer = setTimeout(() => {
+                    clickCount = 0;
+                }, 3000); // إعطاء مهلة 3 ثواني للضغطات المتتالية
             }
         });
 
@@ -456,9 +479,9 @@
         function filterCategory(cat) {
             document.querySelectorAll('.cat-btn').forEach(btn => {
                 if (btn.dataset.cat === cat) {
-                    btn.className = "cat-btn px-5 py-2.5 rounded-xl bg-brand-accent text-white font-bold text-xs whitespace-nowrap shadow";
+                    btn.className = "cat-btn px-4 py-2 rounded-xl bg-brand-accent text-white font-bold text-xs whitespace-nowrap shadow";
                 } else {
-                    btn.className = "cat-btn px-5 py-2.5 rounded-xl glass-card text-gray-300 font-bold text-xs whitespace-nowrap hover:text-white";
+                    btn.className = "cat-btn px-4 py-2 rounded-xl glass-card text-gray-300 font-bold text-xs whitespace-nowrap hover:text-white";
                 }
             });
 
