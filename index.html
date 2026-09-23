@@ -1,21 +1,17 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl" class="overflow-x-hidden">
+ <!DOCTYPE html>
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <!-- منع التكبير والزوم نهائياً -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
-    <title>3D Craft Studio | استوديو الطباعة ثلاثية الأبعاد</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Craft Studio | سوق الطباعة والتصميم ثلاثي الأبعاد</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Supabase JS Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
         tailwind.config = {
@@ -27,11 +23,13 @@
                     colors: {
                         brand: {
                             dark: '#080c14',
-                            card: '#111827',
+                            card: '#121826',
                             border: '#1f293d',
                             accent: '#6366f1',
                             cyan: '#06b6d4',
-                            green: '#22c55e'
+                            pink: '#ec4899',
+                            gold: '#f59e0b',
+                            emerald: '#10b981'
                         }
                     }
                 }
@@ -40,83 +38,120 @@
     </script>
     
     <style>
-        /* إيقاف التكبير والسكرول العرضي لمنع الاهتزاز */
-        html, body {
-            touch-action: pan-y;
-            -webkit-text-size-adjust: 100%;
-            overflow-x: hidden;
-            width: 100%;
-            position: relative;
-        }
-
         body {
             font-family: 'Cairo', sans-serif;
             background-color: #080c14;
             color: #f3f4f6;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-            -webkit-user-select: none;
+            overflow-x: hidden;
         }
 
+        /* Glassmorphism Effect */
         .glass-panel {
-            background: rgba(17, 24, 39, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(18, 24, 38, 0.82);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .glass-card {
             background: linear-gradient(145deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
             border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .glass-card:hover {
+            border-color: rgba(99, 102, 241, 0.5);
+            transform: translateY(-4px);
+            box-shadow: 0 14px 35px -10px rgba(99, 102, 241, 0.25);
+        }
+
+        /* Gradient Glows */
+        .glow-accent {
+            box-shadow: 0 0 25px rgba(99, 102, 241, 0.35);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #080c14;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f293d;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6366f1;
+        }
+
+        .color-dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: inline-block;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .color-dot:hover, .color-dot.active {
+            transform: scale(1.25);
+            border-color: #ffffff;
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between overflow-x-hidden text-right">
+<body class="min-h-screen flex flex-col justify-between">
 
-    <!-- Top Announcement Bar -->
-    <div class="bg-gradient-to-r from-brand-accent to-brand-cyan text-white text-[11px] sm:text-xs font-bold py-2 px-4 text-center flex items-center justify-center gap-1.5 shadow-md">
-        <span>🖨️ طباعة ثلاثية الأبعاد بأعلى دقة وخامات مقاومة – شحن لجميع المحافظات</span>
+    <!-- Announcement Bar -->
+    <div class="bg-gradient-to-r from-brand-accent via-brand-cyan to-brand-pink text-white text-xs font-bold py-2 text-center tracking-wide">
+        ⚡ سوق المبدعين: اطلب منتجات مطبوعة جاهزة أو ارفع تصميمك وشغل طابعاتنا لخدمتك!
     </div>
 
     <!-- Navigation Header -->
     <header class="sticky top-0 z-40 glass-panel border-b border-brand-border/60">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="flex items-center justify-between h-16 sm:h-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
                 
-                <!-- Logo (الضغط 10 مرات هنا يفتح لوحة السرية) -->
-                <div id="secretLogoTrigger" class="flex items-center gap-2.5 cursor-pointer active:scale-95 transition-transform">
-                    <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-tr from-brand-accent to-brand-cyan flex items-center justify-center shadow-lg">
-                        <i data-lucide="box" class="w-5 h-5 sm:w-6 sm:h-6 text-white"></i>
+                <!-- Logo -->
+                <div class="flex items-center gap-3 cursor-pointer" onclick="filterCategory('all')">
+                    <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-brand-accent to-brand-cyan flex items-center justify-center shadow-lg glow-accent">
+                        <i data-lucide="printer" class="w-6 h-6 text-white"></i>
                     </div>
                     <div>
-                        <span class="text-xl sm:text-2xl font-black text-white tracking-wide">3D<span class="text-brand-cyan">CRAFT</span></span>
-                        <span class="block text-[9px] sm:text-[10px] text-gray-400 font-medium -mt-1">PRINT STUDIO</span>
+                        <span class="text-2xl font-black tracking-wider text-white">3D<span class="text-brand-cyan">CRAFT</span></span>
+                        <span class="block text-[10px] text-gray-400 font-medium -mt-1">MARKET & DESIGNERS HUB</span>
                     </div>
                 </div>
 
                 <!-- Navigation Links -->
-                <nav class="hidden md:flex items-center gap-6 text-sm font-semibold">
-                    <a href="#catalog" class="text-white hover:text-brand-cyan transition">المتجر والأعمال</a>
-                    <a href="#custom-print" class="text-gray-300 hover:text-brand-cyan transition flex items-center gap-1.5">
-                        <i data-lucide="printer" class="w-4 h-4 text-brand-cyan"></i> اطبع مجسمك الخاص
+                <nav class="hidden md:flex items-center gap-8 text-sm font-semibold">
+                    <a href="#shop" class="text-white hover:text-brand-cyan transition flex items-center gap-1.5">
+                        <i data-lucide="shopping-bag" class="w-4 h-4 text-brand-cyan"></i> سوق المنتجات
+                    </a>
+                    <a href="#designers" class="text-gray-300 hover:text-brand-cyan transition flex items-center gap-1.5">
+                        <i data-lucide="palette" class="w-4 h-4 text-brand-pink"></i> تصاميم المبدعين
+                    </a>
+                    <a href="#custom-order" class="text-gray-300 hover:text-brand-cyan transition flex items-center gap-1.5">
+                        <i data-lucide="upload-cloud" class="w-4 h-4 text-brand-gold"></i> اطلب طباعة STL
+                    </a>
+                    <a href="#sell-with-us" class="text-xs border border-brand-accent/50 text-brand-cyan hover:bg-brand-accent/10 px-3 py-1.5 rounded-lg transition font-bold">
+                        بع تصاميمك معنا 💰
                     </a>
                 </nav>
 
-                <!-- Actions -->
-                <div class="flex items-center gap-2 sm:gap-3">
-                    <!-- WhatsApp Direct Button -->
-                    <a href="https://wa.me/201039432549" target="_blank" class="px-3 py-2 rounded-xl bg-brand-green/10 border border-brand-green/30 text-brand-green hover:bg-brand-green hover:text-white text-xs font-bold transition flex items-center gap-1.5">
-                        <i data-lucide="message-circle" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">تواصل واتساب</span>
-                    </a>
+                <!-- Action Controls -->
+                <div class="flex items-center gap-4">
+                    <!-- Search Input -->
+                    <div class="relative hidden sm:block">
+                        <input type="text" id="searchInput" oninput="searchProducts()" placeholder="ابحث عن مجسم، ديكور، قطعة..." class="bg-brand-card/90 border border-brand-border text-sm rounded-xl px-4 py-2 pr-10 text-white placeholder-gray-400 focus:outline-none focus:border-brand-accent w-48 md:w-64 transition">
+                        <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-3"></i>
+                    </div>
 
                     <!-- Cart Button -->
-                    <button onclick="toggleCart()" class="relative p-2.5 rounded-xl bg-brand-card border border-brand-border text-white transition active:scale-95">
-                        <i data-lucide="shopping-bag" class="w-5 h-5"></i>
-                        <span id="cartCount" class="absolute -top-1 -right-1 bg-brand-cyan text-black font-black text-[10px] w-5 h-5 rounded-full flex items-center justify-center shadow">0</span>
+                    <button onclick="toggleCart()" class="relative p-2.5 rounded-xl bg-brand-card border border-brand-border hover:border-brand-accent text-white transition">
+                        <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                        <span id="cartCount" class="absolute -top-1 -right-1 bg-brand-pink text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
                     </button>
                 </div>
 
@@ -124,283 +159,349 @@
         </div>
     </header>
 
-    <!-- Mobile Navigation Bar -->
-    <div class="md:hidden fixed bottom-3 left-4 right-4 z-40 glass-panel border border-brand-border/80 rounded-2xl p-2 flex items-center justify-around shadow-2xl">
-        <a href="#catalog" class="flex flex-col items-center gap-0.5 text-gray-300 hover:text-brand-cyan text-[10px] font-bold">
-            <i data-lucide="grid" class="w-5 h-5"></i>
-            <span>المعروضات</span>
-        </a>
-        <a href="#custom-print" class="flex flex-col items-center gap-0.5 text-brand-cyan text-[10px] font-bold">
-            <i data-lucide="printer" class="w-5 h-5"></i>
-            <span>طباعة خاصة</span>
-        </a>
-        <a href="https://wa.me/201039432549" target="_blank" class="flex flex-col items-center gap-0.5 text-brand-green text-[10px] font-bold">
-            <i data-lucide="message-circle" class="w-5 h-5"></i>
-            <span>واتساب</span>
-        </a>
-    </div>
+    <!-- Marketplace Hero Section -->
+    <section class="relative py-12 lg:py-16 overflow-hidden">
+        <div class="absolute -top-40 -right-40 w-96 h-96 bg-brand-accent/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-brand-cyan/20 rounded-full blur-3xl pointer-events-none"></div>
 
-    <!-- Hero Section -->
-    <section class="relative py-8 sm:py-12 overflow-hidden">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="text-center max-w-3xl mx-auto">
-                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-accent/10 border border-brand-accent/30 text-brand-cyan text-xs font-bold mb-4">
-                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-                    استوديو طباعة 3D احترافي حسب الطلب
-                </div>
-
-                <h1 class="text-2xl sm:text-4xl font-black text-white leading-tight mb-3">
-                    نحول أفكارك وتصاميمك إلى <br class="hidden sm:inline">
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-cyan to-brand-accent">مجسمات ملموسة بدقة عالية</span>
-                </h1>
-
-                <p class="text-gray-300 text-xs sm:text-sm mb-6 leading-relaxed px-2">
-                    اختر من تشكيلتنا المميزة من المجسمات الجاهزة للطباعة، أو ارسل لنا ملفك الخاص (STL/OBJ) لنقوم بطباعته لك بأفضل الخامات وشحنه حتى باب بيتك.
-                </p>
-
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-3 px-4">
-                    <a href="#catalog" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-brand-accent to-brand-cyan text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg active:scale-95 transition">
-                        <i data-lucide="eye" class="w-4 h-4"></i>
-                        تصفح المنتجات الجاهزة
-                    </a>
-                    <a href="#custom-print" class="w-full sm:w-auto px-6 py-3 rounded-xl glass-card text-gray-200 font-bold text-xs flex items-center justify-center gap-2 hover:bg-brand-card active:scale-95 transition">
-                        <i data-lucide="printer" class="w-4 h-4 text-brand-cyan"></i>
-                        عايز تطبع ملف خاص بك؟
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Catalog Section -->
-    <section id="catalog" class="py-4 max-w-7xl mx-auto px-4 w-full">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-            <div>
-                <h2 class="text-xl sm:text-2xl font-black text-white">معرض المنتجات والمجسمات الجاهزة</h2>
-                <p class="text-xs text-gray-400">اختر القطعة وسيتم طباعتها وتجهيزها فوراً لحسابك</p>
-            </div>
-
-            <!-- Search -->
-            <div class="relative w-full sm:w-64">
-                <input type="text" id="searchInput" oninput="searchProducts()" placeholder="ابحث عن مجسم..." class="w-full bg-brand-card border border-brand-border text-xs rounded-xl px-4 py-2.5 pl-9 text-white placeholder-gray-400 focus:outline-none focus:border-brand-accent">
-                <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-3"></i>
-            </div>
-        </div>
-
-        <!-- Category Filters -->
-        <div class="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
-            <button onclick="filterCategory('all')" class="cat-btn px-4 py-2 rounded-xl bg-brand-accent text-white font-bold text-xs whitespace-nowrap shadow" data-cat="all">الكل</button>
-            <button onclick="filterCategory('decor')" class="cat-btn px-4 py-2 rounded-xl glass-card text-gray-300 font-bold text-xs whitespace-nowrap hover:text-white" data-cat="decor">ديكور وإضاءة 💡</button>
-            <button onclick="filterCategory('desk')" class="cat-btn px-4 py-2 rounded-xl glass-card text-gray-300 font-bold text-xs whitespace-nowrap hover:text-white" data-cat="desk">أدوات مكتبية 🖥️</button>
-            <button onclick="filterCategory('figures')" class="cat-btn px-4 py-2 rounded-xl glass-card text-gray-300 font-bold text-xs whitespace-nowrap hover:text-white" data-cat="figures">مجسمات وألعاب 🎮</button>
-            <button onclick="filterCategory('parts')" class="cat-btn px-4 py-2 rounded-xl glass-card text-gray-300 font-bold text-xs whitespace-nowrap hover:text-white" data-cat="parts">قطع غيار وميكانيكا 🔧</button>
-        </div>
-    </section>
-
-    <!-- Main Products Grid -->
-    <section class="py-2 max-w-7xl mx-auto px-4 w-full mb-10">
-        <div id="productsGrid" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5">
-            <!-- Rendered dynamically -->
-        </div>
-    </section>
-
-    <!-- Custom Print Section -->
-    <section id="custom-print" class="py-8 max-w-7xl mx-auto px-4 w-full mb-12">
-        <div class="glass-panel p-5 sm:p-8 rounded-3xl border border-brand-border bg-gradient-to-br from-brand-card via-brand-dark to-brand-card relative overflow-hidden">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="grid lg:grid-cols-12 gap-8 items-center">
                 
-                <div class="text-right w-full md:w-2/3">
-                    <div class="flex items-center gap-2 text-brand-cyan font-bold text-xs mb-1.5">
-                        <i data-lucide="file-up" class="w-4 h-4"></i>
-                        خدمة الطباعة المخصصة (On-Demand)
+                <!-- Main Sales Call to Action -->
+                <div class="lg:col-span-7">
+                    <div class="inline-flex items-center gap-2 px-3 me.py-1 rounded-full bg-brand-emerald/10 border border-brand-emerald/30 text-brand-emerald text-xs font-bold mb-4">
+                        <i data-lucide="check-circle" class="w-4 h-4"></i>
+                        طابعاتنا جاهزة للتنفيذ والشحن المباشر خلال 24-48 ساعة
                     </div>
-                    <h2 class="text-lg sm:text-2xl font-black text-white mb-2">معاك ملف 3D أو فكرة عايز تطبعها؟</h2>
-                    <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
-                        تواصل معنا مباشرة عبر الواتساب، ارسل ملف التصميم (STL / OBJ) أو صور الفكرة، وسنقوم بتحديد الخامات المناسبة وحساب التكلفة بدقة فوراً!
+                    <h1 class="text-3xl sm:text-5xl font-black text-white leading-tight mb-4">
+                        سوق المنتجات ثلاثية الأبعاد <br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-cyan via-brand-accent to-brand-pink">من المصمم إلى باب بيتك مباشرة</span>
+                    </h1>
+                    <p class="text-gray-300 text-base mb-6 max-w-xl leading-relaxed">
+                        تصفح مئات المنتجات المبتكرة المصنوعة بأعلى جودة بدقة طباعة عالية وخامات فائقة المتانة. أو اشترِ التصميم وسنقوم بطباعته وشحنه فوراً!
                     </p>
+
+                    <div class="flex flex-wrap items-center gap-4">
+                        <a href="#shop" class="px-7 py-3.5 rounded-xl bg-gradient-to-r from-brand-accent to-brand-cyan text-white font-bold text-sm hover:opacity-90 transition shadow-lg glow-accent flex items-center gap-2">
+                            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                            تصفح وشراء المنتجات
+                        </a>
+                        <a href="#custom-order" class="px-6 py-3.5 rounded-xl glass-card text-white font-semibold text-sm hover:bg-brand-card transition flex items-center gap-2">
+                            <i data-lucide="box" class="w-4 h-4 text-brand-cyan"></i>
+                            طباعة ملف 3D خاص بك
+                        </a>
+                    </div>
+
+                    <!-- Market Stats -->
+                    <div class="grid grid-cols-3 gap-4 mt-8 pt-6 border-t border-brand-border/60">
+                        <div>
+                            <span class="block text-xl font-extrabold text-white">+120</span>
+                            <span class="text-xs text-gray-400">منتج جاهز للشراء</span>
+                        </div>
+                        <div>
+                            <span class="block text-xl font-extrabold text-white">+35</span>
+                            <span class="text-xs text-gray-400">مصمم مستقل مسجل</span>
+                        </div>
+                        <div>
+                            <span class="block text-xl font-extrabold text-white">100%</span>
+                            <span class="text-xs text-gray-400">خامات متينة (PLA/PETG)</span>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="w-full md:w-auto flex flex-col sm:flex-row gap-3">
-                    <button onclick="openWhatsAppCustomOrder()" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-brand-green hover:bg-green-600 text-white font-bold text-xs transition flex items-center justify-center gap-2 shadow-lg active:scale-95">
-                        <i data-lucide="message-circle" class="w-4 h-4"></i>
-                        ارسل ملفك على الواتساب
+                <!-- Featured Best-Seller Product Card -->
+                <div class="lg:col-span-5">
+                    <div class="glass-panel p-5 rounded-2xl border border-brand-border/80 shadow-2xl relative group">
+                        <div class="absolute top-3 right-3 bg-brand-pink text-white text-[11px] font-bold px-3 py-1 rounded-full z-10 shadow">
+                            🏆 الأعلى مبيعاً هذا الأسبوع
+                        </div>
+                        <img id="heroImage" src="https://images.unsplash.com/photo-1615655406736-b37c4fabf923?auto=format&fit=crop&w=800&q=80" alt="Hero Product" class="w-full h-72 object-cover rounded-xl group-hover:scale-102 transition duration-300">
+                        
+                        <div class="mt-4">
+                            <div class="flex items-center justify-between text-xs text-gray-400 mb-1">
+                                <span class="flex items-center gap-1 text-brand-cyan font-semibold">
+                                    <i data-lucide="user" class="w-3.5 h-3.5"></i> تصميم: Eng. Karim
+                                </span>
+                                <span class="text-brand-gold font-bold">★ 4.9 (84 تقييم)</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white">حامل هاتف وساعة المكتب الهندسي (CyberDock)</h3>
+                            <div class="mt-3 flex items-center justify-between">
+                                <div>
+                                    <span class="text-2xl font-black text-brand-cyan">180 ج.م</span>
+                                    <span class="text-xs text-gray-500 line-through me-2">220 ج.م</span>
+                                </div>
+                                <button onclick="quickAddHero()" class="px-5 py-2.5 rounded-xl bg-brand-accent hover:bg-indigo-600 text-white text-xs font-bold transition flex items-center gap-1.5">
+                                    <i data-lucide="shopping-cart" class="w-4 h-4"></i> شراء الآن
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Category Filters Section -->
+    <section id="categories" class="py-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h2 class="text-2xl font-black text-white">أقسام المتجر</h2>
+                <p class="text-xs text-gray-400">اختر القسم للتصفح والشراء المباشر</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3 overflow-x-auto pb-2 no-scrollbar">
+            <button onclick="filterCategory('all')" class="cat-btn px-5 py-2.5 rounded-xl bg-brand-accent text-white font-bold text-xs whitespace-nowrap transition" data-cat="all">
+                جميع المنتجات 🛍️
+            </button>
+            <button onclick="filterCategory('decor')" class="cat-btn px-5 py-2.5 rounded-xl glass-card text-gray-300 font-bold text-xs whitespace-nowrap hover:text-white transition" data-cat="decor">
+                ديكور وإضاءات 💡
+            </button>
+            <button onclick="filterCategory('desk')" class="cat-btn px-5 py-2.5 rounded-xl glass-card text-gray-300 font-bold text-xs whitespace-nowrap hover:text-white transition" data-cat="desk">
+                منظمات المكتب 🖥️
+            </button>
+            <button onclick="filterCategory('figures')" class="cat-btn px-5 py-2.5 rounded-xl glass-card text-gray-300 font-bold text-xs whitespace-nowrap hover:text-white transition" data-cat="figures">
+                مجسمات وأنمي 🎮
+            </button>
+            <button onclick="filterCategory('parts')" class="cat-btn px-5 py-2.5 rounded-xl glass-card text-gray-300 font-bold text-xs whitespace-nowrap hover:text-white transition" data-cat="parts">
+                 قطع هندسية وبديلة 🔧
+            </button>
+        </div>
+    </section>
+
+    <!-- Main Products Catalog -->
+    <section id="shop" class="py-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+        <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Dynamic JS Items -->
+        </div>
+    </section>
+
+    <!-- Designer Hub Banner (Encouraging Designers & Community) -->
+    <section id="sell-with-us" class="py-12 bg-gradient-to-r from-brand-card via-brand-dark to-brand-card border-y border-brand-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <span class="text-brand-pink font-bold text-xs uppercase tracking-wider">مجتمع المصممين</span>
+                    <h2 class="text-2xl sm:text-3xl font-black text-white mt-1 mb-3">مصمم 3D؟ اعرض أفكارك ونحن نتكفل بالطباعة والبيع!</h2>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-6">
+                        لا تحتاج لامتلاك طابعة 3D لتبدأ مشروعك! ارفع تصاميمك على المنصة، وحدد هامش ربحك. عندما يطلب أي زبون تصميمك، نقوم بطباعته على طابعاتنا الاحترافية، وتجهيزه وشحنه، وتحويل أرباحك لك فوراً.
+                    </p>
+                    <button onclick="alert('خدمة انضمام المصممين قيد التفعيل، يمكنك التواصل معنا عبر الواتساب لإضافة تصاميمك اليوم!')" class="px-6 py-3 rounded-xl bg-brand-pink hover:bg-pink-600 text-white text-xs font-bold transition flex items-center gap-2">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i> انضم كمصمم شريك
                     </button>
                 </div>
-
+                <div class="glass-panel p-6 rounded-2xl border border-brand-border text-center">
+                    <div class="w-12 h-12 rounded-full bg-brand-cyan/20 border border-brand-cyan/40 flex items-center justify-center text-brand-cyan mx-auto mb-3">
+                        <i data-lucide="cpu" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">طابعات عالية الدقة لمشروعاتك</h3>
+                    <p class="text-xs text-gray-400 max-w-md mx-auto">
+                        نستخدم أحدث طابعات FDM و Resin بملء داخلي متين وخامات مستوردة تضمن خروج منتجك بأعلى جودة سوقية.
+                    </p>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- SECRET ADMIN DASHBOARD MODAL -->
-    <div id="adminModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
-        <div class="glass-panel w-full max-w-lg rounded-3xl border border-brand-border p-5 relative max-h-[90vh] overflow-y-auto">
-            <button onclick="closeAdminModal()" class="absolute top-4 left-4 p-2 rounded-full bg-brand-card text-gray-400 hover:text-white">
-                <i data-lucide="x" class="w-5 h-5"></i>
-            </button>
+    <!-- Custom Order Studio (STL Upload) -->
+    <section id="custom-order" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="glass-panel p-8 sm:p-10 rounded-3xl border border-brand-border relative overflow-hidden">
+            <div class="max-w-2xl">
+                <span class="text-brand-cyan font-bold text-xs uppercase tracking-widest">خدمة الطباعة الفورية</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-white mt-1 mb-3">عندك ملف STL أو تصميم جاهز؟</h2>
+                <p class="text-gray-300 text-sm mb-6 leading-relaxed">
+                    أرسل لنا رابط أو ملف التصميم، اختر الخامة واللون، وسنحسب لك تكلفة الطباعة بالجرام والشحن فوراً!
+                </p>
 
-            <h3 class="text-base sm:text-lg font-black text-brand-cyan mb-1 flex items-center gap-2">
-                <i data-lucide="shield-check" class="w-5 h-5"></i> لوحة الإدارة والمزامنة
-            </h3>
-            <p class="text-xs text-gray-400 mb-4">إضافة منتج جديد وحفظه بقاعدة البيانات الدائمة مباشرة</p>
-
-            <form onsubmit="handleAddNewProduct(event)" class="space-y-3">
-                <div>
-                    <label class="block text-xs font-bold text-gray-300 mb-1">اسم المنتج / المجسم</label>
-                    <input type="text" id="newTitle" required placeholder="مثال: حامل هاتف هندسي" class="w-full bg-brand-card border border-brand-border rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-brand-accent">
-                </div>
-                
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-gray-300 mb-1">السعر (ج.م)</label>
-                        <input type="number" id="newPrice" required placeholder="150" class="w-full bg-brand-card border border-brand-border rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-brand-accent">
+                <form onsubmit="handleCustomOrder(event)" class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">الاسم الكامل</label>
+                            <input type="text" required class="w-full bg-brand-card border border-brand-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-accent">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">رقم الواتساب للتواصل</label>
+                            <input type="tel" required placeholder="01xxxxxxxxx" class="w-full bg-brand-card border border-brand-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-accent">
+                        </div>
                     </div>
+
                     <div>
-                        <label class="block text-xs font-bold text-gray-300 mb-1">القسم</label>
-                        <select id="newCategory" class="w-full bg-brand-card border border-brand-border rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-brand-accent">
-                            <option value="decor">ديكور وإضاءة</option>
-                            <option value="desk">أدوات مكتبية</option>
-                            <option value="figures">مجسمات وألعاب</option>
-                            <option value="parts">قطع غيار وميكانيكا</option>
-                        </select>
+                        <label class="block text-xs font-semibold text-gray-300 mb-1">إرفاق ملف 3D (STL/OBJ) أو رابط Thingiverse/Printables</label>
+                        <input type="file" class="w-full bg-brand-card border border-brand-border rounded-xl px-4 py-2 text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-accent file:text-white hover:file:bg-indigo-600">
                     </div>
-                </div>
 
-                <div>
-                    <label class="block text-xs font-bold text-gray-300 mb-1">رابط صورة المنتج (URL)</label>
-                    <input type="url" id="newImage" required placeholder="https://..." class="w-full bg-brand-card border border-brand-border rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-brand-accent">
-                </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-300 mb-1">تفاصيل المادة واللون المطلوب</label>
+                        <textarea rows="3" placeholder="مثال: خامة PLA باللون الأسود، نسبة التعبئة 20%..." class="w-full bg-brand-card border border-brand-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-accent"></textarea>
+                    </div>
 
-                <div>
-                    <label class="block text-xs font-bold text-gray-300 mb-1">وصف المنتج</label>
-                    <textarea id="newDescription" rows="2" placeholder="وصف قصير وخامات القطعة..." class="w-full bg-brand-card border border-brand-border rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-brand-accent"></textarea>
-                </div>
-
-                <button type="submit" id="submitBtn" class="w-full py-3 rounded-xl bg-gradient-to-r from-brand-accent to-brand-cyan text-white font-bold text-xs shadow-lg hover:opacity-90 transition">
-                    حفظ ومزامنة مع قاعدة البيانات
-                </button>
-            </form>
+                    <button type="submit" class="px-8 py-3.5 rounded-xl bg-gradient-to-r from-brand-accent to-brand-cyan text-white font-bold text-sm hover:opacity-90 transition shadow-lg">
+                        حساب التكلفة وإرسال الطلب
+                    </button>
+                </form>
+            </div>
         </div>
-    </div>
+    </section>
 
     <!-- Shopping Cart Drawer -->
     <div id="cartDrawer" class="fixed inset-y-0 left-0 z-50 w-full sm:w-96 glass-panel border-r border-brand-border transform -translate-x-full transition-transform duration-300 flex flex-col justify-between">
-        <div class="p-4 border-b border-brand-border/60 flex items-center justify-between">
+        <div class="p-6 border-b border-brand-border/60 flex items-center justify-between">
             <div class="flex items-center gap-2">
-                <i data-lucide="shopping-bag" class="w-5 h-5 text-brand-cyan"></i>
-                <h3 class="font-bold text-white text-base">سلة طلبات الطباعة</h3>
+                <i data-lucide="shopping-cart" class="w-5 h-5 text-brand-cyan"></i>
+                <h3 class="font-bold text-white text-lg">سلة الشراء</h3>
             </div>
             <button onclick="toggleCart()" class="p-2 rounded-lg text-gray-400 hover:text-white">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
         </div>
 
-        <div id="cartItems" class="p-4 flex-1 overflow-y-auto space-y-3">
-            <!-- Items -->
+        <!-- Cart Items List -->
+        <div id="cartItems" class="p-6 flex-1 overflow-y-auto space-y-4">
+            <!-- Rendered via JS -->
         </div>
 
-        <div class="p-4 border-t border-brand-border/60 bg-brand-card/90 space-y-3">
-            <div class="flex items-center justify-between text-xs sm:text-sm">
-                <span class="text-gray-400">الإجمالي التقديري:</span>
-                <span id="cartTotal" class="font-black text-brand-cyan text-base">0 ج.م</span>
+        <!-- Cart Footer -->
+        <div class="p-6 border-t border-brand-border/60 bg-brand-card/90 space-y-4">
+            <div class="flex items-center justify-between text-sm">
+                <span class="text-gray-400">إجمالي المنتجات:</span>
+                <span id="cartSubtotal" class="font-bold text-white">0 ج.م</span>
+            </div>
+            <div class="flex items-center justify-between text-lg font-black border-t border-brand-border/40 pt-3">
+                <span class="text-white">الإجمالي الكلي:</span>
+                <span id="cartTotal" class="text-brand-cyan">0 ج.م</span>
             </div>
 
-            <button onclick="checkoutWhatsApp()" class="w-full py-3.5 rounded-xl bg-brand-green hover:bg-green-600 text-white font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow-lg active:scale-95">
-                <i data-lucide="message-circle" class="w-4 h-4"></i>
-                تأكيد الطلب عبر الواتساب (01039432549)
+            <button onclick="checkoutWhatsApp()" class="w-full py-4 rounded-xl bg-green-600 hover:bg-green-500 text-white font-bold text-sm transition flex items-center justify-center gap-2 shadow-lg">
+                <i data-lucide="message-circle" class="w-5 h-5"></i>
+                تأكيد وإتمام الطلب عبر الواتساب
             </button>
-        </div>
-    </div>
-
-    <!-- Product Details Modal -->
-    <div id="productModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
-        <div class="glass-panel w-full sm:max-w-xl rounded-t-3xl sm:rounded-3xl border border-brand-border p-5 sm:p-6 relative max-h-[85vh] overflow-y-auto">
-            <button onclick="closeModal()" class="absolute top-4 left-4 p-2 rounded-full bg-brand-card text-gray-400 hover:text-white">
-                <i data-lucide="x" class="w-5 h-5"></i>
-            </button>
-
-            <div id="modalContent"></div>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer class="bg-brand-card border-t border-brand-border py-8 mb-14 md:mb-0">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <span class="text-lg font-black text-white">3D<span class="text-brand-cyan">CRAFT</span></span>
-            <p class="text-xs text-gray-400 mt-1">جميع الحقوق محفوظة © 2026 - استوديو الطباعة ثلاثية الأبعاد</p>
+    <footer class="bg-brand-card/90 border-t border-brand-border py-10 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-right">
+            <div>
+                <span class="text-xl font-black text-white">3D<span class="text-brand-cyan">CRAFT</span></span>
+                <p class="text-xs text-gray-400 mt-1">جميع الحقوق محفوظة © 2026 - سوق وتصميم الطباعة ثلاثية الأبعاد</p>
+            </div>
+            <div class="flex items-center gap-6 text-xs text-gray-400">
+                <a href="#shop" class="hover:text-white transition">المتجر</a>
+                <a href="#custom-order" class="hover:text-white transition">طباعة STL</a>
+                <a href="#sell-with-us" class="hover:text-white transition">انضم كمصمم</a>
+            </div>
         </div>
     </footer>
 
-    <!-- JS Application Script -->
+    <!-- Application JavaScript Logic -->
     <script>
-        const WHATSAPP_NUMBER = "201039432549";
-        const SECRET_PIN = "2529";
-
-        // Supabase Database Connection Setup
-        const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
-        const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
-        const supabase = (SUPABASE_URL !== "YOUR_SUPABASE_PROJECT_URL") ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
-
-        // Fallback Products Database
-        let products = [
+        const products = [
             {
                 id: 1,
-                title: "حامل هاتف وساعة بتصميم Futurism",
+                title: "حامل هاتف وساعة CyberDock",
                 category: "desk",
+                designer: "Eng. Karim",
                 price: 180,
+                oldPrice: 220,
+                rating: 4.9,
+                badge: "الأكثر مبيعاً",
                 image: "https://images.unsplash.com/photo-1615655406736-b37c4fabf923?auto=format&fit=crop&w=600&q=80",
-                description: "حامل مريح للمكتب يتسع للهاتف والساعة الذكية مع مجرى مخصص لأسلاك الشاحن."
+                description: "حامل مكتب عصري للهاتف والساعة الذكية مع مسار مخفي للكابلات."
             },
             {
                 id: 2,
                 title: "وحدة إضاءة هندسية Geometric Lamp",
                 category: "decor",
+                designer: "Studio Mesh",
                 price: 340,
+                oldPrice: 400,
+                rating: 5.0,
+                badge: "خصم خاص",
                 image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=600&q=80",
-                description: "أباجورة ديكورية هندسية تعكس ظلالاً ساحرة عند إضاءتها."
+                description: "أباجورة ديكورية تعكس ظلالاً هندسية مميزة عند تشغيلها."
+            },
+            {
+                id: 3,
+                title: "تنين مفصلي Articulated Dragon",
+                category: "figures",
+                designer: "3D Print Lab",
+                price: 260,
+                oldPrice: null,
+                rating: 4.8,
+                badge: "جديد",
+                image: "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=600&q=80",
+                description: "مجسم متحرك بالكامل مطبوع بدون تجميع، قطعة رائعة للمكتب."
+            },
+            {
+                id: 4,
+                title: "منظم كابلات مغناطيسي للمكتب",
+                category: "desk",
+                designer: "Alex Designs",
+                price: 95,
+                oldPrice: 130,
+                rating: 4.7,
+                badge: null,
+                image: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=600&q=80",
+                description: "حل عملي لمنع تشابك السلوك وسقوط الموصلات خلف المكتب."
+            },
+            {
+                id: 5,
+                title: "زهرية حلزونية انسيابية Spiral Vase",
+                category: "decor",
+                designer: "Sami Craft",
+                price: 210,
+                oldPrice: 250,
+                rating: 4.9,
+                badge: "طلب عالي",
+                image: "https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?auto=format&fit=crop&w=600&q=80",
+                description: "مزهرية عصرية لخامات النباتات الجافة والديكور الداخلي."
+            },
+            {
+                id: 6,
+                title: "ترس ميكانيكي عالي الصلابة PETG",
+                category: "parts",
+                designer: "Mecha Parts",
+                price: 120,
+                oldPrice: null,
+                rating: 5.0,
+                badge: "قطعة بديلة",
+                image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80",
+                description: "قطعة ميكانيكية مقواة تتحمل درجات الحرارة والاحتكاك العالي."
             }
         ];
 
         let cart = [];
 
-        // Fetch Products from Database
-        async function fetchProductsFromDB() {
-            if (supabase) {
-                const { data, error } = await supabase.from('products').select('*').order('id', { ascending: false });
-                if (!error && data.length > 0) {
-                    products = data;
-                }
-            }
-            renderProducts(products);
-        }
-
-        // Render Products
         function renderProducts(items) {
             const grid = document.getElementById('productsGrid');
             grid.innerHTML = '';
 
-            if (items.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-8 text-gray-400 text-xs">لا توجد نتائج تطابق بحثك حالياً.</div>`;
-                return;
-            }
-
             items.forEach(product => {
                 grid.innerHTML += `
-                    <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between text-right">
-                        <div class="relative cursor-pointer" onclick="openModal(${product.id})">
-                            <img src="${product.image}" alt="${product.title}" class="w-full h-36 sm:h-48 object-cover">
+                    <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between group">
+                        <div class="relative overflow-hidden">
+                            ${product.badge ? `<span class="absolute top-3 right-3 bg-brand-accent text-white text-[10px] font-bold px-2.5 py-1 rounded-full z-10 shadow">${product.badge}</span>` : ''}
+                            <img src="${product.image}" alt="${product.title}" class="w-full h-48 object-cover group-hover:scale-105 transition duration-300">
                         </div>
 
-                        <div class="p-3 sm:p-4 flex-1 flex flex-col justify-between">
+                        <div class="p-4 flex-1 flex flex-col justify-between">
                             <div>
-                                <h3 onclick="openModal(${product.id})" class="font-bold text-white text-xs sm:text-sm hover:text-brand-cyan transition cursor-pointer line-clamp-1">${product.title}</h3>
-                                <p class="text-[10px] sm:text-xs text-gray-400 mt-1 line-clamp-2">${product.description}</p>
+                                <div class="flex items-center justify-between text-xs text-gray-400 mb-1">
+                                    <span class="text-brand-cyan text-[11px] font-semibold">بواسطة: ${product.designer}</span>
+                                    <span class="text-yellow-400 font-bold">★ ${product.rating}</span>
+                                </div>
+                                <h3 class="font-bold text-white text-sm hover:text-brand-cyan transition line-clamp-1">${product.title}</h3>
+                                <p class="text-xs text-gray-400 mt-1 line-clamp-2">${product.description}</p>
                             </div>
 
-                            <div class="mt-3 pt-2.5 border-t border-brand-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                                <span class="text-xs sm:text-sm font-black text-brand-cyan">${product.price} ج.م</span>
-                                <button onclick="addToCart(${product.id})" class="w-full sm:w-auto px-3 py-1.5 rounded-xl bg-brand-accent hover:bg-indigo-600 text-white transition text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1 active:scale-95">
-                                    <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-                                    طلب طباعة
+                            <div class="mt-4 pt-3 border-t border-brand-border/50 flex items-center justify-between">
+                                <div>
+                                    <span class="text-base font-black text-white">${product.price} ج.م</span>
+                                    ${product.oldPrice ? `<span class="text-xs text-gray-500 line-through me-1">${product.oldPrice} ج.م</span>` : ''}
+                                </div>
+                                <button onclick="addToCart(${product.id})" class="px-3 py-2 rounded-xl bg-brand-accent hover:bg-indigo-600 text-white transition text-xs font-bold flex items-center gap-1 shadow">
+                                    <i data-lucide="plus" class="w-3.5 h-3.5"></i> أضف للسلة
                                 </button>
                             </div>
                         </div>
@@ -410,78 +511,14 @@
             lucide.createIcons();
         }
 
-        // Add Product (Connected to Database)
-        async function handleAddNewProduct(e) {
-            e.preventDefault();
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.innerText = "جاري الحفظ...";
-
-            const newProd = {
-                id: Date.now(),
-                title: document.getElementById('newTitle').value,
-                price: parseFloat(document.getElementById('newPrice').value),
-                category: document.getElementById('newCategory').value,
-                image: document.getElementById('newImage').value,
-                description: document.getElementById('newDescription').value
-            };
-
-            if (supabase) {
-                await supabase.from('products').insert([newProd]);
-            }
-
-            products.unshift(newProd);
-            renderProducts(products);
-            closeAdminModal();
-            submitBtn.innerText = "حفظ ومزامنة مع قاعدة البيانات";
-            alert('تم الحفظ بالداتا بيز بنجاح!');
-            e.target.reset();
-        }
-
-        // Secret Trigger Logic (10 Clicks on 3D CRAFT Logo OR Ctrl+Shift+A)
-        let clickCount = 0;
-        let clickTimer = null;
-
-        document.getElementById('secretLogoTrigger').addEventListener('click', () => {
-            clickCount++;
-            clearTimeout(clickTimer);
-
-            if (clickCount >= 10) {
-                clickCount = 0;
-                verifyAndOpenAdmin();
-            } else {
-                clickTimer = setTimeout(() => {
-                    clickCount = 0;
-                }, 3000); // إعطاء مهلة 3 ثواني للضغطات المتتالية
-            }
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') {
-                e.preventDefault();
-                verifyAndOpenAdmin();
-            }
-        });
-
-        function verifyAndOpenAdmin() {
-            const inputPin = prompt("🔑 ادخل الرمز السري للوصول للوحة الإدارة:");
-            if (inputPin === SECRET_PIN) {
-                document.getElementById('adminModal').classList.remove('hidden');
-            } else if (inputPin !== null) {
-                alert("رمز سري خاطئ!");
-            }
-        }
-
-        function closeAdminModal() {
-            document.getElementById('adminModal').classList.add('hidden');
-        }
-
-        // Filter / Search / Cart functions
         function filterCategory(cat) {
             document.querySelectorAll('.cat-btn').forEach(btn => {
                 if (btn.dataset.cat === cat) {
-                    btn.className = "cat-btn px-4 py-2 rounded-xl bg-brand-accent text-white font-bold text-xs whitespace-nowrap shadow";
+                    btn.classList.add('bg-brand-accent', 'text-white');
+                    btn.classList.remove('glass-card', 'text-gray-300');
                 } else {
-                    btn.className = "cat-btn px-4 py-2 rounded-xl glass-card text-gray-300 font-bold text-xs whitespace-nowrap hover:text-white";
+                    btn.classList.remove('bg-brand-accent', 'text-white');
+                    btn.classList.add('glass-card', 'text-gray-300');
                 }
             });
 
@@ -494,125 +531,105 @@
 
         function searchProducts() {
             const query = document.getElementById('searchInput').value.toLowerCase();
-            renderProducts(products.filter(p => p.title.toLowerCase().includes(query) || p.description.toLowerCase().includes(query)));
+            const filtered = products.filter(p => p.title.toLowerCase().includes(query) || p.description.toLowerCase().includes(query));
+            renderProducts(filtered);
         }
 
         function addToCart(id) {
             const product = products.find(p => p.id === id);
-            const existing = cart.find(item => item.id === id);
-
-            if (existing) {
-                existing.qty++;
+            const exist = cart.find(item => item.id === id);
+            if (exist) {
+                exist.qty++;
             } else {
                 cart.push({ ...product, qty: 1 });
             }
-
-            updateCartUI();
+            updateCart();
             toggleCart(true);
         }
 
-        function updateCartQty(id, change) {
+        function quickAddHero() {
+            addToCart(1);
+        }
+
+        function updateCart() {
+            const cartItems = document.getElementById('cartItems');
+            const cartCount = document.getElementById('cartCount');
+            const cartSubtotal = document.getElementById('cartSubtotal');
+            const cartTotal = document.getElementById('cartTotal');
+
+            cartItems.innerHTML = '';
+            let total = 0;
+            let count = 0;
+
+            cart.forEach(item => {
+                total += item.price * item.qty;
+                count += item.qty;
+                cartItems.innerHTML += `
+                    <div class="flex items-center justify-between bg-brand-card p-3 rounded-xl border border-brand-border">
+                        <div class="flex items-center gap-3">
+                            <img src="${item.image}" class="w-12 h-12 rounded-lg object-cover">
+                            <div>
+                                <h4 class="text-xs font-bold text-white line-clamp-1">${item.title}</h4>
+                                <span class="text-xs text-brand-cyan font-bold">${item.price} ج.م</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="changeQty(${item.id}, -1)" class="w-6 h-6 rounded bg-brand-border text-white text-xs font-bold">-</button>
+                            <span class="text-xs text-white font-bold">${item.qty}</span>
+                            <button onclick="changeQty(${item.id}, 1)" class="w-6 h-6 rounded bg-brand-border text-white text-xs font-bold">+</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            cartCount.innerText = count;
+            cartSubtotal.innerText = total + ' ج.م';
+            cartTotal.innerText = total + ' ج.م';
+        }
+
+        function changeQty(id, delta) {
             const item = cart.find(i => i.id === id);
             if (item) {
-                item.qty += change;
+                item.qty += delta;
                 if (item.qty <= 0) {
                     cart = cart.filter(i => i.id !== id);
                 }
             }
-            updateCartUI();
-        }
-
-        function updateCartUI() {
-            const container = document.getElementById('cartItems');
-            const count = document.getElementById('cartCount');
-            const total = document.getElementById('cartTotal');
-
-            const totalCount = cart.reduce((acc, item) => acc + item.qty, 0);
-            const totalPrice = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
-
-            count.innerText = totalCount;
-            total.innerText = `${totalPrice} ج.م`;
-
-            container.innerHTML = '';
-
-            if (cart.length === 0) {
-                container.innerHTML = `<p class="text-center py-8 text-gray-400 text-xs">سلة الطلبات فارغة حالياً</p>`;
-            } else {
-                cart.forEach(item => {
-                    container.innerHTML += `
-                        <div class="flex items-center gap-3 bg-brand-card/70 p-2.5 rounded-xl border border-brand-border">
-                            <img src="${item.image}" class="w-12 h-12 object-cover rounded-lg">
-                            <div class="flex-1">
-                                <h4 class="text-xs font-bold text-white line-clamp-1">${item.title}</h4>
-                                <span class="text-xs text-brand-cyan font-bold block mt-0.5">${item.price * item.qty} ج.م</span>
-                            </div>
-                            <div class="flex items-center gap-2 bg-brand-dark px-2 py-1 rounded-lg border border-brand-border">
-                                <button onclick="updateCartQty(${item.id}, -1)" class="text-gray-400 hover:text-white text-xs font-bold px-1">-</button>
-                                <span class="text-xs text-white font-bold">${item.qty}</span>
-                                <button onclick="updateCartQty(${item.id}, 1)" class="text-gray-400 hover:text-white text-xs font-bold px-1">+</button>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-            lucide.createIcons();
+            updateCart();
         }
 
         function toggleCart(forceOpen = false) {
             const drawer = document.getElementById('cartDrawer');
-            if (forceOpen) {
+            if (forceOpen || drawer.classList.contains('-translate-x-full')) {
                 drawer.classList.remove('-translate-x-full');
             } else {
-                drawer.classList.toggle('-translate-x-full');
+                drawer.classList.add('-translate-x-full');
             }
         }
 
         function checkoutWhatsApp() {
-            if (cart.length === 0) return alert('السلة فارغة!');
-
-            let msg = "مرحباً، أرغب في تأكيد طلب طباعة المنتجات التالية من المتجر:\n\n";
+            if (cart.length === 0) {
+                alert('سلة الشراء فارغة حالياً!');
+                return;
+            }
+            let msg = 'مرحباً، أريد طلب المنتجات التالية من المتجر:\n';
             let total = 0;
-
-            cart.forEach((item, index) => {
-                msg += `${index + 1}. ${item.title} (العدد: ${item.qty}) - ${item.price * item.qty} ج.م\n`;
+            cart.forEach(item => {
+                msg += `- ${item.title} (الكمية: ${item.qty}) بسعر: ${item.price * item.qty} ج.م\n`;
                 total += item.price * item.qty;
             });
-
-            msg += `\nالإجمالي: ${total} ج.م\nيرجى التواصل لتأكيد خامة الطباعة وتفاصيل العنوان!`;
-            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+            msg += `\nالإجمالي: ${total} ج.م`;
+            
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
-        function openWhatsAppCustomOrder() {
-            const msg = "مرحباً، معي ملف/تصميم 3D خاص وأرغب في استفسار وتحديد تكلفة طباعته معكم.";
-            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+        function handleCustomOrder(e) {
+            e.preventDefault();
+            alert('تم استلام معلومات طلبك! سنقوم بمراجعة التفاصيل والتواصل معك عبر الواتساب لتحديد التكلفة والشحن.');
         }
 
-        function openModal(id) {
-            const product = products.find(p => p.id === id);
-            const content = document.getElementById('modalContent');
-
-            content.innerHTML = `
-                <img src="${product.image}" class="w-full h-48 sm:h-64 object-cover rounded-xl border border-brand-border mb-4">
-                <h2 class="text-lg font-bold text-white mb-2">${product.title}</h2>
-                <p class="text-xs text-gray-300 mb-4 leading-relaxed">${product.description}</p>
-                <div class="flex items-center justify-between pt-3 border-t border-brand-border">
-                    <span class="text-lg font-black text-brand-cyan">${product.price} ج.م</span>
-                    <button onclick="addToCart(${product.id}); closeModal();" class="px-4 py-2 rounded-xl bg-brand-accent text-white font-bold text-xs">
-                        أضف لطلبات الطباعة
-                    </button>
-                </div>
-            `;
-
-            document.getElementById('productModal').classList.remove('hidden');
-            lucide.createIcons();
-        }
-
-        function closeModal() {
-            document.getElementById('productModal').classList.add('hidden');
-        }
-
-        // Init App
-        fetchProductsFromDB();
+        // Initial Render
+        renderProducts(products);
         lucide.createIcons();
     </script>
 </body>
