@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Craft Studio | متجر الطباعة ثلاثية الأبعاد</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#0b0f19',
+                            card: '#151c2c',
+                            border: '#232f48',
+                            accent: '#6366f1',
+                            cyan: '#06b6d4',
+                            pink: '#ec4899',
+                            gold: '#f59e0b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #0b0f19;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Effect */
+        .glass-panel {
+            background: rgba(21, 28, 44, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(99, 102, 241, 0.5);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px -10px rgba(99, 102, 241, 0.2);
+        }
+
+        /* Gradient Glows */
+        .glow-accent {
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.35);
+        }
+
+        .glow-cyan {
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.35);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0f19;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #232f48;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6366f1;
+        }
+
+        /* Color Swatches */
+        .color-swatch {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s;
+            border: 2px solid transparent;
+        }
+        .color-swatch:hover, .color-swatch.active {
+            transform: scale(1.2);
+            border-color: #ffffff;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Announcement Bar -->
+    <div class="bg-gradient-to-r from-brand-accent via-brand-cyan to-brand-pink text-white text-xs font-bold py-2 text-center tracking-wide">
+        ⚡ شحن مجاني للطلبات أكثر من 500 جنيه | استخدام كود <span class="bg-black/30 px-2 py-0.5 rounded text-yellow-300">PRINT10</span> لخصم 10%
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-40 glass-panel border-b border-brand-border/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- Logo -->
+                <div class="flex items-center gap-3 cursor-pointer" onclick="filterCategory('all')">
+                    <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-brand-accent to-brand-cyan flex items-center justify-center shadow-lg glow-accent">
+                        <i data-lucide="box" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <div>
+                        <span class="text-2xl font-black tracking-wider text-white">3D<span class="text-brand-cyan">CRAFT</span></span>
+                        <span class="block text-[10px] text-gray-400 font-medium -mt-1">STUDIO & MARKET</span>
+                    </div>
+                </div>
+
+                <!-- Navigation Links -->
+                <nav class="hidden md:flex items-center gap-8 text-sm font-semibold">
+                    <a href="#shop" class="text-white hover:text-brand-cyan transition">المتجر والرئيسية</a>
+                    <a href="#deals" class="text-gray-300 hover:text-brand-cyan transition flex items-center gap-1">
+                        <i data-lucide="flame" class="w-4 h-4 text-brand-pink"></i> العروض اليومية
+                    </a>
+                    <a href="#categories" class="text-gray-300 hover:text-brand-cyan transition">الأقسام</a>
+                    <a href="#reviews" class="text-gray-300 hover:text-brand-cyan transition">آراء العملاء</a>
+                    <a href="#custom-order" class="text-gray-400 hover:text-white transition text-xs border border-brand-border px-3 py-1.5 rounded-lg bg-brand-card/50">طلب تصميم خاص</a>
+                </nav>
+
+                <!-- Action Controls -->
+                <div class="flex items-center gap-4">
+                    <!-- Search Button -->
+                    <div class="relative hidden sm:block">
+                        <input type="text" id="searchInput" oninput="searchProducts()" placeholder="ابحث عن منتج..." class="bg-brand-card/80 border border-brand-border text-sm rounded-xl px-4 py-2 pr-10 text-white placeholder-gray-400 focus:outline-none focus:border-brand-accent w-48 md:w-64 transition">
+                        <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-3"></i>
+                    </div>
+
+                    <!-- Cart Button -->
+                    <button onclick="toggleCart()" class="relative p-2.5 rounded-xl bg-brand-card border border-brand-border hover:border-brand-accent text-white transition">
+                        <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                        <span id="cartCount" class="absolute -top-1 -right-1 bg-brand-pink text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Showcase Section -->
+    <section class="relative py-12 lg:py-20 overflow-hidden">
+        <div class="absolute -top-40 -right-40 w-96 h-96 bg-brand-accent/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-brand-cyan/20 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-accent/10 border border-brand-accent/30 text-brand-cyan text-xs font-bold mb-6">
+                        <i data-lucide="sparkles" class="w-4 h-4"></i>
+                        منتجات مطبوعة بأعلى دقة وتفاصيل
+                    </div>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
+                        منتجات ثلاثية الأبعاد <br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-cyan via-brand-accent to-brand-pink">تضفي تميزاً لعالمك</span>
+                    </h1>
+                    <p class="text-gray-300 text-lg mb-8 max-w-xl font-normal leading-relaxed">
+                        اكتشف تشكيلة حصرية من الديكورات العصرية، مجسمات الألعاب، الملحقات المكتبية وقطع الغيار المطبوعة باحترافية بدقة عالية وخامات متينة.
+                    </p>
+
+                    <div class="flex flex-wrap items-center gap-4">
+                        <a href="#shop" class="px-8 py-4 rounded-xl bg-gradient-to-r from-brand-accent to-brand-cyan text-white font-bold text-base hover:opacity-90 transition shadow-lg glow-accent flex items-center gap-2">
+                            <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            تسوق المنتجات الآن
+                        </a>
+                        <a href="#custom-order" class="px-6 py-4 rounded-xl glass-card text-white font-semibold text-base hover:bg-brand-card transition flex items-center gap-2">
+                            <i data-lucide="upload-cloud" class="w-5 h-5 text-brand-cyan"></i>
+                            طباعة تصميمك الخاص
+                        </a>
+                    </div>
+
+                    <!-- Micro Trust Metrics -->
+                    <div class="grid grid-cols-3 gap-4 mt-12 pt-8 border-t border-brand-border/60">
+                        <div>
+                            <span class="block text-2xl font-extrabold text-white">100%</span>
+                            <span class="text-xs text-gray-400">خامات عاليـة الجودة</span>
+                        </div>
+                        <div>
+                            <span class="block text-2xl font-extrabold text-white">+500</span>
+                            <span class="text-xs text-gray-400">عميل راضٍ عن المنتجات</span>
+                        </div>
+                        <div>
+                            <span class="block text-2xl font-extrabold text-white">48 ساعة</span>
+                            <span class="text-xs text-gray-400">شحن سريع للطلبات</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hero Visual Feature Item -->
+                <div class="relative">
+                    <div class="glass-panel p-6 rounded-3xl border border-brand-border/80 shadow-2xl relative overflow-hidden group">
+                        <div class="absolute top-4 left-4 bg-brand-pink text-white text-xs font-bold px-3 py-1 rounded-full z-10 shadow">
+                            🔥 الأكثر طلباً هذا الأسبوع
+                        </div>
+                        <img id="heroImage" src="https://images.unsplash.com/photo-1615655406736-b37c4fabf923?auto=format&fit=crop&w=800&q=80" alt="Hero Product" class="w-full h-80 sm:h-96 object-cover rounded-2xl group-hover:scale-105 transition duration-500">
+                        
+                        <div class="mt-6 flex items-center justify-between">
+                            <div>
+                                <h3 class="text-xl font-bold text-white">حامل هاتف وساعة بتصميم هندسي Futuristic</h3>
+                                <p class="text-sm text-gray-400 mt-1">متوفر بألوان متعددة وقاعدة ثقيلة متينة</p>
+                            </div>
+                            <div class="text-left">
+                                <span class="text-2xl font-black text-brand-cyan">180 ج.م</span>
+                                <button onclick="quickAddHero()" class="mt-2 px-4 py-2 rounded-lg bg-brand-accent text-white text-xs font-bold hover:bg-indigo-600 transition block">
+                                    أضف للسلة
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Flash Sales Banner -->
+    <section id="deals" class="py-8 bg-gradient-to-r from-brand-card via-brand-dark to-brand-card border-y border-brand-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-brand-pink/20 border border-brand-pink/40 flex items-center justify-center text-brand-pink">
+                    <i data-lucide="zap" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-black text-white">عروض الخصم السريع (Flash Sale)</h2>
+                    <p class="text-xs text-gray-400">خصومات تصل إلى 25% على قطاعات الديكور والألعاب</p>
+                </div>
+            </div>
+
+            <!-- Timer Mockup -->
+            <div class="flex items-center gap-3 text-center">
+                <div class="bg-brand-card px-3 py-2 rounded-lg border border-brand-border">
+                    <span class="block text-lg font-black text-white">08</span>
+                    <span class="text-[10px] text-gray-400">ساعة</span>
+                </div>
+                <span class="text-white font-bold">:</span>
+                <div class="bg-brand-card px-3 py-2 rounded-lg border border-brand-border">
+                    <span class="block text-lg font-black text-white">42</span>
+                    <span class="text-[10px] text-gray-400">دقيقة</span>
+                </div>
+                <span class="text-white font-bold">:</span>
+                <div class="bg-brand-card px-3 py-2 rounded-lg border border-brand-border">
+                    <span class="block text-lg font-black text-white">15</span>
+                    <span class="text-[10px] text-gray-400">ثانية</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Category Filters -->
+    <section id="categories" class="py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h2 class="text-2xl font-black text-white">تصفح حسب القسم</h2>
+                <p class="text-sm text-gray-400">اختر التصنيف لمشاهدة المنتجات المتاحة فوراً</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3 overflow-x-auto pb-4 no-scrollbar">
+            <button onclick="filterCategory('all')" class="cat-btn px-6 py-3 rounded-xl bg-brand-accent text-white font-bold text-sm whitespace-nowrap transition active shadow" data-cat="all">
+                جميع المنتجات
+            </button>
+            <button onclick="filterCategory('decor')" class="cat-btn px-6 py-3 rounded-xl glass-card text-gray-300 font-bold text-sm whitespace-nowrap hover:text-white transition" data-cat="decor">
+                ديكور وإضاءة 💡
+            </button>
+            <button onclick="filterCategory('desk')" class="cat-btn px-6 py-3 rounded-xl glass-card text-gray-300 font-bold text-sm whitespace-nowrap hover:text-white transition" data-cat="desk">
+                أدوات مكتبية 🖥️
+            </button>
+            <button onclick="filterCategory('figures')" class="cat-btn px-6 py-3 rounded-xl glass-card text-gray-300 font-bold text-sm whitespace-nowrap hover:text-white transition" data-cat="figures">
+                مجسمات وألعاب 🎮
+            </button>
+            <button onclick="filterCategory('parts')" class="cat-btn px-6 py-3 rounded-xl glass-card text-gray-300 font-bold text-sm whitespace-nowrap hover:text-white transition" data-cat="parts">
+                قطع متينة وحلول 🔧
+            </button>
+        </div>
+    </section>
+
+    <!-- Main Store Catalog Section -->
+    <section id="shop" class="py-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
+        <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Products inserted dynamically via JS -->
+        </div>
+    </section>
+
+    <!-- Customer Reviews / Social Proof -->
+    <section id="reviews" class="py-16 bg-brand-card/30 border-y border-brand-border/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-black text-white">آراء وتقييمات عميلنا</h2>
+                <p class="text-gray-400 mt-2">صور حقيقية لمنتجاتنا بعد الطباعة والتسليم</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="glass-card p-6 rounded-2xl">
+                    <div class="flex items-center gap-1 text-yellow-400 mb-3">
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                    </div>
+                    <p class="text-gray-300 text-sm mb-4">"الجودة ممتازة والتفاصيل في مجسم الأنمي دقيقة جداً! اللون الذهبي الحريري طالع تحفة على المكتب."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-brand-accent/30 flex items-center justify-center font-bold text-white text-sm">أ.م</div>
+                        <div>
+                            <span class="block text-sm font-bold text-white">أحمد محمود</span>
+                            <span class="text-xs text-gray-500">القاهرة</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-6 rounded-2xl">
+                    <div class="flex items-center gap-1 text-yellow-400 mb-3">
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                    </div>
+                    <p class="text-gray-300 text-sm mb-4">"طلبت حامل هاتف وساعة وسرعة التوصيل كانت ممتازة. الخشب الرخامي خامة متينة وشكلها شيك جداً."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-brand-cyan/30 flex items-center justify-center font-bold text-white text-sm">م.س</div>
+                        <div>
+                            <span class="block text-sm font-bold text-white">مهند سامي</span>
+                            <span class="text-xs text-gray-500">الإسكندرية</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-6 rounded-2xl">
+                    <div class="flex items-center gap-1 text-yellow-400 mb-3">
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                    </div>
+                    <p class="text-gray-300 text-sm mb-4">"ميزة طباعة الأسماء على المنتجات عملت لي هدية قيمة جداً لصديقي. شكراً على التغليف والاهتمام."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-brand-pink/30 flex items-center justify-center font-bold text-white text-sm">س.ع</div>
+                        <div>
+                            <span class="block text-sm font-bold text-white">سارة علي</span>
+                            <span class="text-xs text-gray-500">الجيزة</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Custom Order Studio (Secondary Feature) -->
+    <section id="custom-order" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="glass-panel p-8 sm:p-12 rounded-3xl border border-brand-border relative overflow-hidden">
+            <div class="max-w-2xl">
+                <span class="text-brand-cyan font-bold text-xs uppercase tracking-widest">خدمة خاصة للطلبات المخصصة</span>
+                <h2 class="text-3xl font-black text-white mt-2 mb-4">عندك تصميم 3D خاص عاوز تطبعه؟</h2>
+                <p class="text-gray-300 text-sm mb-6 leading-relaxed">
+                    إذا كان لديك ملف 3D جاهز بصيغة (STL / OBJ) أو فكرة معينة تريد تجسيمها، أرسل لنا الملف والتفاصيل وسنقوم بحساب التكلفة وطباعتها لك بأفضل جودة.
+                </p>
+
+                <form onsubmit="handleCustomOrder(event)" class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">اسمك الكاـمل</label>
+                            <input type="text" required class="w-full bg-brand-card border border-brand-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-accent">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">رقم الواتساب</label>
+                            <input type="tel" required class="w-full bg-brand-card border border-brand-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-accent">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-300 mb-1">إرفاق ملف STL أو صور الفكرة</label>
+                        <input type="file" class="w-full bg-brand-card border border-brand-border rounded-xl px-4 py-2 text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-accent file:text-white hover:file:bg-indigo-600">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-300 mb-1">تفاصيل وملاحظات الطلب</label>
+                        <textarea rows="3" placeholder="اكتب الأبعاد التقديرية، اللون، والغرض من القطعة..." class="w-full bg-brand-card border border-brand-border rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-accent"></textarea>
+                    </div>
+
+                    <button type="submit" class="px-8 py-3.5 rounded-xl bg-gradient-to-r from-brand-accent to-brand-cyan text-white font-bold text-sm hover:opacity-90 transition">
+                        إرسال طلب التسعيرة عبر الواتساب
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Details Modal -->
+    <div id="productModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-3xl rounded-3xl border border-brand-border p-6 sm:p-8 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal()" class="absolute top-4 left-4 p-2 rounded-full bg-brand-card text-gray-400 hover:text-white transition">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div id="modalContent">
+                <!-- Loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Shopping Cart Drawer -->
+    <div id="cartDrawer" class="fixed inset-y-0 left-0 z-50 w-full sm:w-96 glass-panel border-r border-brand-border transform -translate-x-full transition-transform duration-300 flex flex-col justify-between">
+        <div class="p-6 border-b border-brand-border/60 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <i data-lucide="shopping-bag" class="w-5 h-5 text-brand-cyan"></i>
+                <h3 class="font-bold text-white text-lg">سلة الشراء</h3>
+            </div>
+            <button onclick="toggleCart()" class="p-2 rounded-lg text-gray-400 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <!-- Cart Items List -->
+        <div id="cartItems" class="p-6 flex-1 overflow-y-auto space-y-4">
+            <!-- Items rendered via JS -->
+        </div>
+
+        <!-- Cart Footer -->
+        <div class="p-6 border-t border-brand-border/60 bg-brand-card/80 space-y-4">
+            <div class="flex items-center justify-between text-sm">
+                <span class="text-gray-400">الإجمالي الفرعي:</span>
+                <span id="cartSubtotal" class="font-bold text-white">0 ج.م</span>
+            </div>
+            <div class="flex items-center justify-between text-sm">
+                <span class="text-gray-400">الشحن:</span>
+                <span class="text-brand-cyan font-bold">محسوب عند التأكيد</span>
+            </div>
+            <div class="flex items-center justify-between text-lg font-black border-t border-brand-border/40 pt-3">
+                <span class="text-white">الإجمالي الكلي:</span>
+                <span id="cartTotal" class="text-brand-cyan">0 ج.م</span>
+            </div>
+
+            <button onclick="checkoutWhatsApp()" class="w-full py-4 rounded-xl bg-green-600 hover:bg-green-500 text-white font-bold text-sm transition flex items-center justify-center gap-2 shadow-lg">
+                <i data-lucide="message-circle" class="w-5 h-5"></i>
+                إتمام الطلب عبر الواتساب
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-brand-card/90 border-t border-brand-border py-12 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-right">
+            <div>
+                <span class="text-xl font-black text-white">3D<span class="text-brand-cyan">CRAFT</span></span>
+                <p class="text-xs text-gray-400 mt-1">جميع الحقوق محفوظة © 2026 - متجر الطباعة ثلاثية الأبعاد</p>
+            </div>
+            <div class="flex items-center gap-6 text-xs text-gray-400">
+                <a href="#" class="hover:text-white transition">سياسة الشحن</a>
+                <a href="#" class="hover:text-white transition">الضمان والترجيع</a>
+                <a href="#" class="hover:text-white transition">تواصل معنا</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Application Script -->
+    <script>
+        // Sample Products Database
+        const products = [
+            {
+                id: 1,
+                title: "حامل هاتف وساعة بتصميم Futurism",
+                category: "desk",
+                price: 180,
+                oldPrice: 220,
+                rating: 4.9,
+                badge: "الأكثر مبيعاً",
+                image: "https://images.unsplash.com/photo-1615655406736-b37c4fabf923?auto=format&fit=crop&w=600&q=80",
+                description: "حامل ذكي للمكتب يتسع للهاتف والساعة الذكية مع مجرى مخصص لأسلاك الشاحن."
+            },
+            {
+                id: 2,
+                title: "وحدة إضاءة هندسية Geometric Lamp",
+                category: "decor",
+                price: 340,
+                oldPrice: 400,
+                rating: 5.0,
+                badge: "عرض خاص",
+                image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=600&q=80",
+                description: "أباجورة ديكورية بتصميم هندسي معقد تعكس ظلالاً ساحرة على الجدران."
+            },
+            {
+                id: 3,
+                title: "مجسم تنين مفصلي Articulated Dragon",
+                category: "figures",
+                price: 260,
+                oldPrice: null,
+                rating: 4.8,
+                badge: "جديد",
+                image: "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=600&q=80",
+                description: "مجسم متحرك المفاصل بالكامل مطبوع بدون تجميع، ممتع للملمس والمكتب."
+            },
+            {
+                id: 4,
+                title: "منظم كابلات ومفاتيح مغناطيسي",
+                category: "desk",
+                price: 95,
+                oldPrice: 130,
+                rating: 4.7,
+                badge: null,
+                image: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=600&q=80",
+                description: "منظم مكتب يثبت الموصلات والمفاتيح بمرونة لمنع الفوضى."
+            },
+            {
+                id: 5,
+                title: "زهرية ديكور بتطليع حلزوني Spiral Vase",
+                category: "decor",
+                price: 210,
+                oldPrice: 250,
+                rating: 4.9,
+                badge: "الأكثر طلباً",
+                image: "https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?auto=format&fit=crop&w=600&q=80",
+                description: "مزهرية خفيفة الوزن بنمط حلزوني انسيابي لجدولة الزهور الجافة."
+            },
+            {
+                id: 6,
+                title: "ترس ميكانيكي عالي الصلابة PETG",
+                category: "parts",
+                price: 120,
+                oldPrice: null,
+                rating: 5.0,
+                badge: "صناعي",
+                image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80",
+                description: "قطعة بديلة ميكانيكية مطبوعة بخامة PETG المقاومة للحرارة والاحتكاك."
+            }
+        ];
+
+        let cart = [];
+        let currentFilter = 'all';
+
+        // Render Catalog
+        function renderProducts(items) {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = '';
+
+            items.forEach(product => {
+                grid.innerHTML += `
+                    <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between group">
+                        <div class="relative overflow-hidden cursor-pointer" onclick="openModal(${product.id})">
+                            ${product.badge ? `<span class="absolute top-3 right-3 bg-brand-accent text-white text-[10px] font-bold px-2.5 py-1 rounded-full z-10 shadow">${product.badge}</span>` : ''}
+                            <img src="${product.image}" alt="${product.title}" class="w-full h-52 object-cover group-hover:scale-105 transition duration-500">
+                        </div>
+
+                        <div class="p-5 flex-1 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center gap-1 text-yellow-400 text-xs mb-2">
+                                    <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i>
+                                    <span class="font-bold text-gray-200">${product.rating}</span>
+                                </div>
+                                <h3 onclick="openModal(${product.id})" class="font-bold text-white text-base hover:text-brand-cyan transition cursor-pointer line-clamp-1">${product.title}</h3>
+                                <p class="text-xs text-gray-400 mt-1 line-clamp-2">${product.description}</p>
+                            </div>
+
+                            <div class="mt-5 pt-4 border-t border-brand-border/50 flex items-center justify-between">
+                                <div>
+                                    <span class="text-lg font-black text-white">${product.price} ج.م</span>
+                                    ${product.oldPrice ? `<span class="text-xs text-gray-500 line-through mr-1">${product.oldPrice} ج.م</span>` : ''}
+                                </div>
+                                <button onclick="addToCart(${product.id})" class="px-3.5 py-2 rounded-xl bg-brand-card hover:bg-brand-accent text-brand-cyan hover:text-white border border-brand-border transition text-xs font-bold flex items-center gap-1.5">
+                                    <i data-lucide="plus" class="w-4 h-4"></i>
+                                    إضافة
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            lucide.createIcons();
+        }
+
+        // Category Filter
+        function filterCategory(cat) {
+            currentFilter = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                if (btn.dataset.cat === cat) {
+                    btn.className = "cat-btn px-6 py-3 rounded-xl bg-brand-accent text-white font-bold text-sm whitespace-nowrap transition active shadow";
+                } else {
+                    btn.className = "cat-btn px-6 py-3 rounded-xl glass-card text-gray-300 font-bold text-sm whitespace-nowrap hover:text-white transition";
+                }
+            });
+
+            if (cat === 'all') {
+                renderProducts(products);
+            } else {
+                renderProducts(products.filter(p => p.category === cat));
+            }
+        }
+
+        // Search Filter
+        function searchProducts() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = products.filter(p => p.title.toLowerCase().includes(query) || p.description.toLowerCase().includes(query));
+            renderProducts(filtered);
+        }
+
+        // Add to Cart
+        function addToCart(productId, selectedColor = 'ذهبي حريري', customText = '') {
+            const product = products.find(p => p.id === productId);
+            const existing = cart.find(item => item.id === productId && item.color === selectedColor && item.customText === customText);
+
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                cart.push({ ...product, qty: 1, color: selectedColor, customText: customText });
+            }
+
+            updateCartUI();
+            toggleCart(true);
+        }
+
+        // Quick add Hero Item
+        function quickAddHero() {
+            addToCart(1);
+        }
+
+        // Update Cart UI
+        function updateCartUI() {
+            const container = document.getElementById('cartItems');
+            const countEl = document.getElementById('cartCount');
+            const subtotalEl = document.getElementById('cartSubtotal');
+            const totalEl = document.getElementById('cartTotal');
+
+            const totalQty = cart.reduce((acc, item) => acc + item.qty, 0);
+            const totalCost = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+
+            countEl.innerText = totalQty;
+            subtotalEl.innerText = `${totalCost} ج.م`;
+            totalEl.innerText = `${totalCost} ج.م`;
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-gray-400">
+                        <i data-lucide="shopping-cart" class="w-12 h-12 mx-auto mb-3 opacity-30"></i>
+                        <p class="text-sm">سلة الشراء فارغة حالياً</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = '';
+                cart.forEach((item, index) => {
+                    container.innerHTML += `
+                        <div class="flex items-center justify-between gap-3 p-3 rounded-xl bg-brand-card border border-brand-border">
+                            <img src="${item.image}" class="w-14 h-14 object-cover rounded-lg">
+                            <div class="flex-1">
+                                <h4 class="text-xs font-bold text-white">${item.title}</h4>
+                                <p class="text-[10px] text-gray-400">اللون: ${item.color} ${item.customText ? `| نقش: ${item.customText}` : ''}</p>
+                                <span class="text-xs font-black text-brand-cyan">${item.price} ج.م</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-bold text-white">x${item.qty}</span>
+                                <button onclick="removeItem(${index})" class="text-gray-500 hover:text-red-400 p-1">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            lucide.createIcons();
+        }
+
+        function removeItem(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function toggleCart(forceOpen = false) {
+            const drawer = document.getElementById('cartDrawer');
+            if (forceOpen) {
+                drawer.classList.remove('-translate-x-full');
+            } else {
+                drawer.classList.toggle('-translate-x-full');
+            }
+        }
+
+        // Open Product Modal
+        function openModal(id) {
+            const p = products.find(item => item.id === id);
+            const modal = document.getElementById('productModal');
+            const content = document.getElementById('modalContent');
+
+            content.innerHTML = `
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <img src="${p.image}" class="w-full h-64 sm:h-80 object-cover rounded-2xl border border-brand-border">
+                    </div>
+                    <div class="flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs text-brand-cyan font-bold uppercase">منتج طباعة 3D</span>
+                            <h2 class="text-2xl font-black text-white mt-1">${p.title}</h2>
+                            <p class="text-gray-300 text-sm mt-3 leading-relaxed">${p.description}</p>
+
+                            <!-- Color Customizer -->
+                            <div class="mt-6">
+                                <label class="block text-xs font-bold text-gray-300 mb-2">اختر لون الطباعة المطلوب:</label>
+                                <div class="flex items-center gap-3">
+                                    <div onclick="selectColor(this, 'ذهبي حريري')" class="color-swatch active bg-amber-400" title="ذهبي حريري"></div>
+                                    <div onclick="selectColor(this, 'أسود مطفي')" class="color-swatch bg-gray-900" title="أسود مطفي"></div>
+                                    <div onclick="selectColor(this, 'رخامي أبيض')" class="color-swatch bg-gray-200" title="رخامي أبيض"></div>
+                                    <div onclick="selectColor(this, 'نيون أزرق')" class="color-swatch bg-cyan-400" title="نيون أزرق"></div>
+                                </div>
+                            </div>
+
+                            <!-- Custom Engraving Input -->
+                            <div class="mt-4">
+                                <label class="block text-xs font-bold text-gray-300 mb-1">إضافة اسم/نقش بارز على المنتج (اختياري):</label>
+                                <input type="text" id="engravingText" placeholder="مثال: Ahmed" class="w-full bg-brand-card border border-brand-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-accent">
+                            </div>
+                        </div>
+
+                        <div class="mt-6 pt-4 border-t border-brand-border flex items-center justify-between">
+                            <div>
+                                <span class="text-2xl font-black text-white">${p.price} ج.م</span>
+                            </div>
+                            <button onclick="addModalToCart(${p.id})" class="px-6 py-3 rounded-xl bg-gradient-to-r from-brand-accent to-brand-cyan text-white font-bold text-sm hover:opacity-90 transition shadow-lg">
+                                إضافة للسلة الآن
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        let selectedColorVal = 'ذهبي حريري';
+        function selectColor(el, color) {
+            document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+            el.classList.add('active');
+            selectedColorVal = color;
+        }
+
+        function addModalToCart(id) {
+            const engraving = document.getElementById('engravingText').value;
+            addToCart(id, selectedColorVal, engraving);
+            closeModal();
+        }
+
+        function closeModal() {
+            document.getElementById('productModal').classList.add('hidden');
+        }
+
+        // WhatsApp Checkout Integration
+        function checkoutWhatsApp() {
+            if (cart.length === 0) return alert('سلة الشراء فارغة!');
+
+            let text = "مرحباً، أريد إتمام طلب المنتجات التالية من المتجر:\n\n";
+            cart.forEach(item => {
+                text += `- ${item.title} (الكمية: ${item.qty}) | اللون: ${item.color} ${item.customText ? `| النقش: ${item.customText}` : ''}\n`;
+            });
+
+            const total = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+            text += `\nالإجمالي الكلي: ${total} ج.م`;
+
+            const phone = "201000000000"; // اكتب رقم الواتساب الخاص بك هنا
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        // Custom Order Handler
+        function handleCustomOrder(e) {
+            e.preventDefault();
+            alert('تم استلام طلب التسعيرة الخاص بك، وسنقوم بالتواصل معك عبر الواتساب فوراً!');
+        }
+
+        // Initialize App
+        renderProducts(products);
+        lucide.createIcons();
+    </script>
+</body>
+</html>
